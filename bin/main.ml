@@ -1,15 +1,20 @@
 open Printf
 
 let read_whole_chan chan =
-  let len = in_channel_length chan in
-  let result = (Bytes.create len) in
-    really_input chan result 0 len;
-    (Bytes.to_string result)
+  let buf = Buffer.create 4096 in
+  try
+    while true do
+      let line = input_line chan in
+      Buffer.add_string buf line;
+      Buffer.add_char buf '\n'
+    done;
+    assert false (*Never executed*)
+  with
+    End_of_file -> Buffer.contents buf
 
 let read_whole_file filename =
   let chan = open_in filename in
     read_whole_chan chan
-
 let () =
   let filename = Sys.argv.(1) in
   let str = read_whole_file filename in
